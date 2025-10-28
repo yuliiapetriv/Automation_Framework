@@ -1,0 +1,72 @@
+name: Run UI & API Tests
+
+on:
+  schedule:
+    - cron: '0 */1 * * *'
+  workflow_dispatch:
+    inputs:
+      TEST_GROUP:
+        description: 'Select test group: ui / api / all'
+        required: false
+        default: 'all'
+
+env:
+  ALLURE_RESULTS: target/allure-results
+  ALLURE_REPORT: target/site/allure-maven-plugin
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        include:
+          - group: ui
+            suite: src/test/resources/suites/ui_tests.xml
+          - group: api
+            suite: src/test/resources/suites/api_tests.xml
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Run tests with Maven
+        if: ${{ github.event.inputs.TEST_GROUP == 'all' || matrix.group == github.event.inputs.TEST_GROUP }}
+        run: |
+          echo "Running ${{ matrix.group }} tests..."
+          mvn -B -e -ntp clean test \
+            -Dsuite=${{ matrix.suite }}
+
+      - name: Generate Allure HTML report
+        if: always()
+        run: |
+          echo "Generating Allure report..."
+          mvn allure:report
+
+      - name: Upload Allure results (raw data)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-${{ matrix.group }}
+          path: ${{ env.ALLURE_RESULTS }}
+
+      - name: Upload Allure HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-html-${{ matrix.group }}
+          path: ${{ env.ALLURE_REPORT }}
