@@ -9,7 +9,7 @@ import org.testng.*;
 
 public class HomePage extends ParentPage {
 
-    @FindBy(css = "textarea[jsname='1yZiJbe']")
+    @FindBy(css = "textarea[jsname='yZiJbe']")
     private WebElement input;
 
     public HomePage(WebDriver driver) {
