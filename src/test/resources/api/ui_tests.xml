@@ -1,0 +1,9 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="UI Tests" parallel="tests">
+    <test name="Home Page Tests">
+        <classes>
+            <class name="pages.HomePageTests"/>
+        </classes>
+    </test>
+</suite>
