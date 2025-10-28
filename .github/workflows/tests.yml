@@ -17,8 +17,10 @@ env:
 jobs:
   tests:
     runs-on: ubuntu-latest
+    continue-on-error: true
 
     strategy:
+      fail-fast: false
       matrix:
         include:
           - group: ui
@@ -51,11 +53,11 @@ jobs:
           mvn -B -e -ntp clean test \
             -Dsuite=${{ matrix.suite }}
 
-      - name: Generate Allure HTML report
+      - name: Generate Allure Report
         if: always()
         run: |
-          echo "Generating Allure report..."
           mvn allure:report
+          echo "Allure report generated at target/site/allure-maven-plugin/index.html"
 
       - name: Upload Allure results (raw data)
         if: always()

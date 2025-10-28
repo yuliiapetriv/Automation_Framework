@@ -10,12 +10,22 @@ public class ConfigReader {
     static {
         try (InputStream input = ConfigReader.class.getClassLoader()
                 .getResourceAsStream("config.properties")) {
+
             if (input == null) {
-                throw new RuntimeException("Cannot find config.properties file");
+                throw new RuntimeException("❌ Cannot find config.properties file");
             }
+
             properties.load(input);
+
+            // 🧠 Автоматичне визначення GitHub Actions середовища
+            String isCI = System.getenv("GITHUB_ACTIONS");
+            if ("true".equalsIgnoreCase(isCI)) {
+                System.out.println("🧠 Running in GitHub Actions → forcing headless=true");
+                properties.setProperty("headless", "true");
+            }
+
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load config.properties: " + e.getMessage());
+            throw new RuntimeException("❌ Failed to load config.properties: " + e.getMessage());
         }
     }
 
