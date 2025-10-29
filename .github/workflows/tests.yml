@@ -90,16 +90,20 @@ jobs:
           name: allure-api
           path: allure/api
 
-      - name: Check Allure directories
+      - name: Prepare GitHub Pages folder
         run: |
-          echo "Contents of allure directory before deploy:"
-          ls -R allure
+          mkdir -p allure-deploy/ui
+          mkdir -p allure-deploy/api
+          cp -r allure/ui/* allure-deploy/ui/
+          cp -r allure/api/* allure-deploy/api/
+          echo "Contents of allure-deploy:"
+          ls -R allure-deploy
 
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: allure
+          publish_dir: allure-deploy
           publish_branch: gh-pages
           force_orphan: true
 
