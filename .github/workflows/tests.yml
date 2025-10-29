@@ -68,10 +68,10 @@ jobs:
           path: ${{ env.ALLURE_RESULTS }}
 
       - name: Deploy Allure Report to GitHub Pages
-        if: always()
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: target/site/allure-maven-plugin
           publish_branch: gh-pages
           destination_dir: allure/${{ matrix.group }}
+          force_orphan: true
