@@ -26,7 +26,7 @@ jobs:
 
     env:
       ALLURE_RESULTS: target/allure-results-${{ matrix.group }}
-      ALLURE_REPORT: target/site/allure-maven-plugin-${{ matrix.group }}
+      ALLURE_REPORT: target/site/allure-maven-plugin
 
     steps:
       - name: Checkout code
