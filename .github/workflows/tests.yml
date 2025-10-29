@@ -50,8 +50,7 @@ jobs:
         if: ${{ github.event.inputs.TEST_GROUP == 'all' || matrix.group == github.event.inputs.TEST_GROUP }}
         run: |
           echo "Running ${{ matrix.group }} tests..."
-          mvn -B -e -ntp clean test \
-            -Dsuite=${{ matrix.suite }}
+          mvn -B -e -ntp clean test -Dsuite=${{ matrix.suite }}
 
       - name: Generate Allure Report
         if: always()
@@ -60,18 +59,36 @@ jobs:
           mvn allure:report
           ls -R target/site/allure-maven-plugin
 
-      - name: Upload Allure raw results
+      - name: Upload Allure HTML artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results-${{ matrix.group }}
-          path: ${{ env.ALLURE_RESULTS }}
+          name: allure-${{ matrix.group }}
+          path: target/site/allure-maven-plugin
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download UI report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-ui
+          path: allure/ui
+
+      - name: Download API report
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-api
+          path: allure/api
 
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: target/site/allure-maven-plugin
+          publish_dir: allure
           publish_branch: gh-pages
-          destination_dir: allure/${{ matrix.group }}
           force_orphan: true
