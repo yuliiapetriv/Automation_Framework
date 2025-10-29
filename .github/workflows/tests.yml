@@ -98,5 +98,6 @@ jobs:
 
       - name: Show Allure Report URLs
         run: |
-          echo "UI report: https://${{ github.repository_owner }}.github.io/$REPO_NAME/ui/index.html"
-          echo "API report: https://${{ github.repository_owner }}.github.io/$REPO_NAME/api/index.html"
+          REPO_NAME=$(basename $GITHUB_REPOSITORY)
+          echo "UI report: https://${GITHUB_REPOSITORY_OWNER}.github.io/$REPO_NAME/ui/index.html"
+          echo "API report: https://${GITHUB_REPOSITORY_OWNER}.github.io/$REPO_NAME/api/index.html"
