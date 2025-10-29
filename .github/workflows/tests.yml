@@ -90,6 +90,11 @@ jobs:
           name: allure-api
           path: allure/api
 
+      - name: Check Allure directories
+        run: |
+          echo "Contents of allure directory before deploy:"
+          ls -R allure
+
       - name: Deploy Allure Report to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
