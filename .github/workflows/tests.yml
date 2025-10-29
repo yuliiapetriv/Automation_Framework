@@ -67,9 +67,11 @@ jobs:
           name: allure-results-${{ matrix.group }}
           path: ${{ env.ALLURE_RESULTS }}
 
-      - name: Upload Allure HTML report
+      - name: Deploy Allure Report to GitHub Pages
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: peaceiris/actions-gh-pages@v6
         with:
-          name: allure-html-${{ matrix.group }}
-          path: target/site/allure-maven-plugin
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: target/site/allure-maven-plugin
+          publish_branch: gh-pages
+          destination_dir: allure/${{ matrix.group }}
