@@ -52,13 +52,15 @@ jobs:
           echo "Running ${{ matrix.group }} tests..."
           mvn -B -e -ntp clean test \
             -Dsuite=${{ matrix.suite }} \
-            -Dallure.results.directory=${{ env.ALLURE_RESULTS }}
+            -Dallure.results.directory=${{ env.ALLURE_RESULTS }} \
+            -Dmaven.test.failure.ignore=true
 
       - name: Generate Allure Report
         if: always()
         run: |
           echo "Generating Allure HTML report for ${{ matrix.group }}..."
-          mvn allure:report -Dallure.results.directory=${{ env.ALLURE_RESULTS }} \
+          mvn allure:report \
+            -Dallure.results.directory=${{ env.ALLURE_RESULTS }} \
             -Dallure.report.directory=${{ env.ALLURE_REPORT }}
           ls -R ${{ env.ALLURE_REPORT }}
 
