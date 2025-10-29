@@ -10,10 +10,6 @@ on:
         required: false
         default: 'all'
 
-env:
-  ALLURE_RESULTS: target/allure-results
-  ALLURE_REPORT: target/site/allure-maven-plugin
-
 jobs:
   tests:
     runs-on: ubuntu-latest
@@ -27,6 +23,10 @@ jobs:
             suite: src/test/resources/suites/ui_tests.xml
           - group: api
             suite: src/test/resources/suites/api_tests.xml
+
+    env:
+      ALLURE_RESULTS: target/allure-results-${{ matrix.group }}
+      ALLURE_REPORT: target/site/allure-maven-plugin-${{ matrix.group }}
 
     steps:
       - name: Checkout code
@@ -50,21 +50,24 @@ jobs:
         if: ${{ github.event.inputs.TEST_GROUP == 'all' || matrix.group == github.event.inputs.TEST_GROUP }}
         run: |
           echo "Running ${{ matrix.group }} tests..."
-          mvn -B -e -ntp clean test -Dsuite=${{ matrix.suite }}
+          mvn -B -e -ntp clean test \
+            -Dsuite=${{ matrix.suite }} \
+            -Dallure.results.directory=${{ env.ALLURE_RESULTS }}
 
       - name: Generate Allure Report
         if: always()
         run: |
-          echo "Generating Allure HTML report..."
-          mvn allure:report
-          ls -R target/site/allure-maven-plugin
+          echo "Generating Allure HTML report for ${{ matrix.group }}..."
+          mvn allure:report -Dallure.results.directory=${{ env.ALLURE_RESULTS }} \
+            -Dallure.report.directory=${{ env.ALLURE_REPORT }}
+          ls -R ${{ env.ALLURE_REPORT }}
 
       - name: Upload Allure HTML artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-${{ matrix.group }}
-          path: target/site/allure-maven-plugin
+          path: ${{ env.ALLURE_REPORT }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -92,3 +95,8 @@ jobs:
           publish_dir: allure
           publish_branch: gh-pages
           force_orphan: true
+
+      - name: Show Allure Report URLs
+        run: |
+          echo "UI report: https://${{ github.repository_owner }}.github.io/${{ github.repository }}/ui/index.html"
+          echo "API report: https://${{ github.repository_owner }}.github.io/${{ github.repository }}/api/index.html"
