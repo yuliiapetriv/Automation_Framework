@@ -56,10 +56,11 @@ jobs:
       - name: Generate Allure Report
         if: always()
         run: |
+          echo "Generating Allure HTML report..."
           mvn allure:report
-          echo "Allure report generated at target/site/allure-maven-plugin/index.html"
+          ls -R target/site/allure-maven-plugin
 
-      - name: Upload Allure results (raw data)
+      - name: Upload Allure raw results
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -71,4 +72,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allure-html-${{ matrix.group }}
-          path: ${{ env.ALLURE_REPORT }}
+          path: target/site/allure-maven-plugin
