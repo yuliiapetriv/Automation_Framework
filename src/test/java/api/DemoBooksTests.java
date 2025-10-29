@@ -1,13 +1,11 @@
 package api;
 
 import api.dto.AddBookDto;
-import api.dto.BookDto;
 import api.dto.BooksDto;
 import api.dto.IsbnDto;
 import common.Log;
 import data.ApiEndpoints;
 import io.qameta.allure.Step;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.json.JSONObject;
 import org.apache.http.HttpStatus;
@@ -89,7 +87,7 @@ public class DemoBooksTests {
         userId = response.jsonPath().getString("userId");
     }
 
-    @Step
+    @Step("Delete all users books")
     private void deleteAllBooks() {
         given()
                 .spec(apiHelper.requestSpecification)
@@ -104,7 +102,7 @@ public class DemoBooksTests {
         Log.info("All books deleted");
     }
 
-    @Step
+    @Step("Get first book isbn")
     private String getFirstBookIsbn() {
         BooksDto books = given()
                 .spec(apiHelper.requestSpecification)
@@ -119,7 +117,7 @@ public class DemoBooksTests {
         return books.getBooks()[0].getIsbn();
     }
 
-    @Step
+    @Step("Add book")
     private void addBook() {
         IsbnDto[] booksToAdd = {IsbnDto.builder().isbn(getFirstBookIsbn()).build()};
 
@@ -141,7 +139,7 @@ public class DemoBooksTests {
                 .statusCode(HttpStatus.SC_CREATED);
     }
 
-    @Test()
+    @Test(description = "Check all users books")
     public void getAllUserBooks() {
         deleteAllBooks();
         addBook();
