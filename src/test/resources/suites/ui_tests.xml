@@ -3,6 +3,7 @@
 <suite name="UI Tests" parallel="tests">
     <listeners>
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+        <listener class-name="listeners.RetryListener"/>
     </listeners>
 
     <test name="Home Page Tests">

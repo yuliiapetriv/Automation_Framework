@@ -8,4 +8,5 @@ public interface ApiEndpoints {
     String GENERATE_TOKEN = BASE_URL + "/Account/v1/GenerateToken";
     String DELETE_ALL_BOOKS = BASE_URL + "/BookStore/v1/Books?UserId={userId}";
     String GET_ALL_BOOKS = BASE_URL + "/BookStore/v1/Books";
+    String CREATE_USER_ENDPOINT = "https://reqres.in/api/users";
 }

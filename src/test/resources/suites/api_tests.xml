@@ -1,13 +1,20 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="API Tests" parallel="tests">
+<suite name="API Tests" parallel="tests" thread-count="2">
     <listeners>
         <listener class-name="io.qameta.allure.testng.AllureTestNg"/>
+        <listener class-name="listeners.RetryListener"/>
     </listeners>
 
     <test name="Demo Book Tests">
         <classes>
             <class name="api.DemoBooksTests"/>
+        </classes>
+    </test>
+
+    <test name="ReqRes Tests">
+        <classes>
+            <class name="api.ReqResTests"/>
         </classes>
     </test>
 </suite>

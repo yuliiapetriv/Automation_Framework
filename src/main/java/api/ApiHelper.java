@@ -9,13 +9,13 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 
 public class ApiHelper {
-    RequestSpecification requestSpecification = new RequestSpecBuilder()
+    public RequestSpecification requestSpecification = new RequestSpecBuilder()
             .setContentType(ContentType.JSON)
             .addFilter(new AllureRestAssured())
             .log(LogDetail.ALL)
             .build();
 
-    ResponseSpecification responseSpecification = new ResponseSpecBuilder()
+    public ResponseSpecification responseSpecification = new ResponseSpecBuilder()
             .log(LogDetail.ALL)
             .build();
 
